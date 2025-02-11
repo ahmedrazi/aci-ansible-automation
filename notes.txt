@@ -1,0 +1,32 @@
+why we use localhost ansible_connection=local in the inventory file for ACI automation:
+Why localhost?
+When working with Cisco ACI, we're not actually SSH-ing into any devices
+We're making API calls to the APIC controller
+The automation runs on your local machine, which makes the API calls
+The playbook executes locally and communicates with APIC via its REST API
+
+
+Why ansible_connection=local?
+ansible_connection=local tells Ansible not to try to make an SSH connection
+Instead, it executes the tasks directly on your machine
+This is needed because:
+
+ACI modules use REST API calls, not SSH
+The cisco.aci collection is designed to run locally and make API calls
+We don't need to establish a traditional network connection to the device
+
+Here's a visualization:
+CopyWithout local connection (traditional networking):
+Ansible → SSH → Network Device
+
+With local connection (ACI):
+Ansible → Local Machine → HTTPS/REST API → APIC Controller
+If we didn't use localhost ansible_connection=local:
+
+Ansible would try to SSH into the APIC
+This would fail because APIC doesn't support direct SSH automation
+You'd get connection errors since APIC expects API calls, not SSH connections
+
+This is why the inventory file is simple:
+iniCopylocalhost ansible_connection=local
+All the actual connection details (APIC IP, username, password) are handled in the vars file and used by the ACI modules to make API calls.

@@ -3,10 +3,10 @@
 ansible.log
 
 # Credentials and sensitive data
-vars/aci_credentials.yml
-*credentials*.yml
-*password*.yml
-*secret*.yml
+vars/aci_credentials.yaml
+*credentials*.yaml
+*password*.yaml
+*secret*.yaml
 
 # Python
 __pycache__/
