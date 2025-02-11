@@ -1,0 +1,51 @@
+---
+- name: Cleanup ACI Resources
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars_files:
+    - vars/credentials.yaml
+
+  tasks:
+    - name: Remove VRFs from each tenant
+      cisco.aci.aci_vrf:
+        host: "{{ aci_url }}"
+        username: "{{ aci_username }}"
+        password: "{{ aci_password }}"
+        tenant: "test-tenant-{{ item }}"
+        vrf: "test-vrf-{{ item }}"
+        state: absent
+        validate_certs: no
+      loop: "{{ range(1, tenant_count + 1)|list }}"
+      register: vrf_removal
+
+    - name: Display VRF removal status
+      debug:
+        msg: "Removed VRF test-vrf-{{ item }} from test-tenant-{{ item }}"
+      loop: "{{ range(1, tenant_count + 1)|list }}"
+      when: vrf_removal is success
+
+    - name: Wait for VRF deletion to complete
+      pause:
+        seconds: 5
+
+    - name: Remove tenants
+      cisco.aci.aci_tenant:
+        host: "{{ aci_url }}"
+        username: "{{ aci_username }}"
+        password: "{{ aci_password }}"
+        tenant: "test-tenant-{{ item }}"
+        state: absent
+        validate_certs: no
+      loop: "{{ range(1, tenant_count + 1)|list }}"
+      register: tenant_removal
+
+    - name: Display tenant removal status
+      debug:
+        msg: "Removed tenant test-tenant-{{ item }}"
+      loop: "{{ range(1, tenant_count + 1)|list }}"
+      when: tenant_removal is success
+
+    - name: Final cleanup status
+      debug:
+        msg: "Cleanup completed. All test tenants and VRFs have been removed."

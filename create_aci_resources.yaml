@@ -1,0 +1,38 @@
+# create_aci_resources.yml
+---
+- name: Create ACI Tenants and VRFs
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars_files:
+    - vars/credentials.yaml
+
+  tasks:
+    - name: Create multiple tenants
+      cisco.aci.aci_tenant:
+        host: "{{ aci_url }}"
+        username: "{{ aci_username }}"
+        password: "{{ aci_password }}"
+        tenant: "test-tenant-{{ item }}"
+        description: "Test tenant {{ item }} created by Ansible"
+        state: present
+        validate_certs: no
+      loop: "{{ range(1, tenant_count + 1)|list }}"
+      register: tenants
+
+    - name: Create VRF for each tenant
+      cisco.aci.aci_vrf:
+        host: "{{ aci_url }}"
+        username: "{{ aci_username }}"
+        password: "{{ aci_password }}"
+        tenant: "test-tenant-{{ item }}"
+        vrf: "test-vrf-{{ item }}"
+        description: "Test VRF created by Ansible"
+        state: present
+        validate_certs: no
+      loop: "{{ range(1, tenant_count + 1)|list }}"
+
+    - name: Display created tenants
+      debug:
+        msg: "Created tenant: test-tenant-{{ item }}"
+      loop: "{{ range(1, tenant_count + 1)|list }}"
