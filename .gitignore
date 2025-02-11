@@ -1,0 +1,39 @@
+# Ansible
+*.retry
+ansible.log
+
+# Keep vars directory but ignore credentials
+vars/aci_credentials.yml
+vars/aci_credentials.yaml
+*credentials*.yml
+*credentials*.yaml
+*password*.yml
+*password*.yaml
+*secret*.yml
+*secret*.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+ENV/
+.env
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
