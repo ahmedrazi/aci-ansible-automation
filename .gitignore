@@ -3,7 +3,7 @@
 ansible.log
 
 # Keep vars directory but ignore credentials
-vars/aci_credentials.yml
+aci_credentials.yml
 vars/aci_credentials.yaml
 *credentials*.yml
 *credentials*.yaml
