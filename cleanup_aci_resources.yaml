@@ -4,7 +4,7 @@
   connection: local
   gather_facts: no
   vars_files:
-    - vars/credentials.yaml
+    - vars/aci_credentials.yaml
 
   tasks:
     - name: Remove VRFs from each tenant
